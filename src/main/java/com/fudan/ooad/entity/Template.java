@@ -11,6 +11,8 @@ public class Template {
 
     private int id;
     private String title;
+    private String description;
+
     private Set<CheckItem> checkItems;
 
     @Id
@@ -30,6 +32,15 @@ public class Template {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @ManyToMany(cascade = CascadeType.ALL)
