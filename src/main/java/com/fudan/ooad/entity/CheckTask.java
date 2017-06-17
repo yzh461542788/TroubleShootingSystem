@@ -1,9 +1,6 @@
 package com.fudan.ooad.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,7 +12,7 @@ public class CheckTask {
     private int id;
     private String title;
     private Template template;
-    private Set<Company> companies;
+    private Set<TaskProcess> taskProcess;
     private Date postDate;
     private Date deadLine;
 
@@ -37,6 +34,8 @@ public class CheckTask {
         this.title = title;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "template_id")
     public Template getTemplate() {
         return template;
     }
@@ -46,12 +45,12 @@ public class CheckTask {
     }
 
     @OneToMany(mappedBy = "checkTask")
-    public Set<Company> getCompanies() {
-        return companies;
+    public Set<TaskProcess> getTaskProcess() {
+        return taskProcess;
     }
 
-    public void setCompanies(Set<Company> companies) {
-        this.companies = companies;
+    public void setTaskProcess(Set<TaskProcess> taskProcess) {
+        this.taskProcess = taskProcess;
     }
 
     public Date getPostDate() {

@@ -1,6 +1,6 @@
 target/
 
-### MAVEN
+### MAVEN ###
 .mvn
 mvnw
 mvnw.cmd
@@ -27,3 +27,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Database properties ###
+/src/main/resources/application.properties

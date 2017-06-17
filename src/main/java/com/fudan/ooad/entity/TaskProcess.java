@@ -4,13 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by zihao on 2017/6/17.
  */
 @Entity(name = "task_process")
-public class TaskProcess {
+public class TaskProcess implements Serializable {
     private CheckTask checkTask;
     private Company company;
     private Date finishTime;
