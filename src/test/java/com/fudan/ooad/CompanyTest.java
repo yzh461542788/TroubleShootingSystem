@@ -4,6 +4,9 @@ package com.fudan.ooad;
  * Created by Jindiwei on 2017/6/17.
  */
 
+import com.fudan.ooad.entity.CheckItemProcess;
+import com.fudan.ooad.entity.Company;
+import com.fudan.ooad.service.CompanyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 public class CompanyTest {
 
+    CompanyService companyService;
     @Test
-    public void getTasksTest(){ //获取每个公司对应的检查事务的List
+    public void setCheckItemStateTest(Company company, CheckItemProcess checkItemProcess) {
 
     }
 
