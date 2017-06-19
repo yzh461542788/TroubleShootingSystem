@@ -1,6 +1,7 @@
 package com.fudan.ooad.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -8,18 +9,18 @@ import java.util.Set;
  */
 @Entity(name = "checkitem")
 public class CheckItem {
-    private int id;
+    private Integer id;
     private String title;
     private String content;
-    private Set<Template> templates;
+    private Set<Template> templates = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -41,12 +42,54 @@ public class CheckItem {
         this.content = content;
     }
 
-    @ManyToMany(mappedBy = "checkItems")
+    @ManyToMany(mappedBy = "checkItems", fetch = FetchType.EAGER)
     public Set<Template> getTemplates() {
-        return templates;
+        // return a copy of set so that the Set cannot be modified outside
+        return new HashSet<>(templates);
     }
 
-    public void setTemplates(Set<Template> templates) {
+    // make it private so that this setter can only be invoke by Hibernate reflection
+    private void setTemplates(Set<Template> templates) {
         this.templates = templates;
+    }
+
+    void addTemplate(Template template) {
+        if (templates.contains(template))
+            return;
+        templates.add(template);
+        template.addCheckItem(this);
+    }
+
+    void removeTemplate(Template template) {
+        if (!templates.contains(template))
+            return;
+        templates.remove(template);
+        template.removeCheckItem(this);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if ((obj == null) || !(obj instanceof CheckItem))
+            return false;
+        CheckItem checkItem = (CheckItem) obj;
+        if (id != null && checkItem.getId() != null)
+            return id.equals(checkItem.getId());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "CheckItem [id=" + id
+                + ", title=" + title
+                + ", content=" + content
+                + ", templates.size=" + templates.size() + "]";
     }
 }

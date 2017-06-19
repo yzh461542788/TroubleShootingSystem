@@ -1,9 +1,7 @@
 package com.fudan.ooad.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -11,7 +9,7 @@ import java.util.Set;
  */
 @Entity(name = "company")
 public class Company {
-    private int id;
+    private Integer id;
     private String name;
     private String companyCode;
     private String organizationCode; // 组织机构代码
@@ -21,18 +19,19 @@ public class Company {
     private String businessCategory; // 所属行业
     private String businessScope; // 主要经营类项
     private CompanyState companyState;
-    private Set<TaskProcess> taskProcesses;
+    private Set<TaskProcess> taskProcesses = new HashSet<>();
 
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
+    @Column(name = "name", unique = true)
     public String getName() {
         return name;
     }
@@ -41,6 +40,7 @@ public class Company {
         this.name = name;
     }
 
+    @Column(name = "company_code", unique = true)
     public String getCompanyCode() {
         return companyCode;
     }
@@ -49,6 +49,7 @@ public class Company {
         this.companyCode = companyCode;
     }
 
+    @Column(name = "organization_code", unique = true)
     public String getOrganizationCode() {
         return organizationCode;
     }
@@ -105,12 +106,43 @@ public class Company {
         this.companyState = companyState;
     }
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     public Set<TaskProcess> getTaskProcesses() {
-        return taskProcesses;
+        return new HashSet<>(taskProcesses);
     }
 
-    public void setTaskProcesses(Set<TaskProcess> taskProcesses) {
+    private void setTaskProcesses(Set<TaskProcess> taskProcesses) {
         this.taskProcesses = taskProcesses;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if ((obj == null) || !(obj instanceof Company))
+            return false;
+        Company company = (Company) obj;
+        if (id != null && company.getId() != null)
+            return id.equals(company.getId());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Company [id=" + id +
+                ", name=" + name +
+                ", companyCode=" + companyCode +
+                ", organizationCode=" + organizationCode +
+                ", contact=" + contact +
+                ", contactPhoneNumber" + contactPhoneNumber +
+                ", businessGroup" + businessGroup +
+                ", businessCategory" + businessCategory +
+                ", businessScope" + businessScope +
+                ", companyState" + companyState + "]";
     }
 }
