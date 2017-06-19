@@ -1,6 +1,8 @@
 package com.fudan.ooad.entity;
 
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -9,23 +11,23 @@ import java.util.Set;
 @Entity(name = "template")
 public class Template {
 
-    private int id;
+    private Integer id;
     private String title;
     private String description;
-
-    private Set<CheckItem> checkItems;
+    private Set<CheckItem> checkItems = new HashSet<>();
+    private Set<CheckTask> checkTasks = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    @Column(name = "title")
+    @Column(name = "title", unique = true)
     public String getTitle() {
         return title;
     }
@@ -43,16 +45,65 @@ public class Template {
         this.description = description;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "template_checkitem",
             joinColumns = @JoinColumn(name = "template_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "checkitem_id", referencedColumnName = "id"))
     public Set<CheckItem> getCheckItems() {
-        return checkItems;
+        return new HashSet<>(checkItems);
     }
 
-    public void setCheckItems(Set<CheckItem> checkItems) {
-
+    private void setCheckItems(Set<CheckItem> checkItems) {
         this.checkItems = checkItems;
+    }
+
+    public void addCheckItem(CheckItem checkItem) {
+        if (checkItems.contains(checkItem))
+            return;
+        checkItems.add(checkItem);
+        checkItem.addTemplate(this);
+    }
+
+    public void removeCheckItem(CheckItem checkItem) {
+        if (!checkItems.contains(checkItem))
+            return;
+        checkItems.remove(checkItem);
+        checkItem.removeTemplate(this);
+    }
+
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<CheckTask> getCheckTasks() {
+        return new HashSet<>(checkTasks);
+    }
+
+    private void setCheckTasks(Set<CheckTask> checkTasks) {
+        this.checkTasks = checkTasks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if ((o == null) || !(o instanceof Template))
+            return false;
+        Template template = (Template) o;
+        if (id != null && template.getId() != null)
+            return id.equals(template.getId());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        if (id == null)
+            return 0;
+        return id % 100;
+    }
+
+    @Override
+    public String toString() {
+        return "Template [id=" + id +
+                ", title=" + title +
+                ", description=" + description +
+                ", checkItems.size=" + checkItems.size() + "]";
     }
 }
