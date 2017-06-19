@@ -11,7 +11,6 @@ public class CheckItem {
     private int id;
     private String title;
     private String content;
-
     private Set<Template> templates;
 
     @Id

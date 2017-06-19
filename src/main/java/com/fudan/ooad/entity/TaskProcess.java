@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by zihao on 2017/6/17.
@@ -15,6 +16,7 @@ public class TaskProcess {
     private Company company;
     private Date finishTime;
     private TaskProcessState taskProcessState;
+    private Set<CheckItemProcess> checkItemProcesses;
 
     @Id
     @ManyToOne

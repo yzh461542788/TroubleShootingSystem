@@ -6,13 +6,13 @@ import java.util.Set;
 /**
  * Created by zihao on 2017/6/7.
  */
+
 @Entity(name = "template")
 public class Template {
 
     private int id;
     private String title;
     private String description;
-
     private Set<CheckItem> checkItems;
 
     @Id

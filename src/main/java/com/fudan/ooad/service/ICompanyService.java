@@ -1,5 +1,6 @@
 package com.fudan.ooad.service;
 
+import com.fudan.ooad.entity.CheckItemProcess;
 import com.fudan.ooad.entity.CheckTask;
 import com.fudan.ooad.entity.Company;
 import com.fudan.ooad.entity.TaskProcess;
@@ -13,7 +14,7 @@ public interface ICompanyService {
 
     //TODO
     //需要确认状态是整个检查事务的状态还是每个检查项目的状态，如果是检查项目的状态的话，那么检查事务的状态就不能手动修改，而是根据检查项目的完成情况自动设置
-    void setCheckItemState();
+    void setCheckItemState(Company company, CheckItemProcess checkItemProcess);
 
     /**
      *
