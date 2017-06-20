@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CheckItemRepository extends JpaRepository<CheckItem, Integer> {
     CheckItem findByTitle(String title);
+    CheckItem findByContent(String content);
+//    Set<CheckItem> findByTitleContainsOrContentContains(String keyword);
 }
