@@ -47,7 +47,7 @@ public class CheckTask implements Serializable {
         this.template = template;
     }
 
-    @OneToMany(mappedBy = "checkTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "checkTask", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Set<TaskProcess> getTaskProcesses() {
         return taskProcesses;
     }

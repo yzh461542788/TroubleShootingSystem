@@ -211,44 +211,34 @@ public class RepositoryTest {
     public void testTaskProcessCRUD() {
         String s = DateUtil.getCurrentDate().toString();
 
-        Company company1 = new Company();
-        company1.setName(s + 1);
-        Company company2 = new Company();
-        company2.setName(s + 2);
+        Company company = new Company();
+        company.setName(s);
 
-        companyRepository.save(company1);
+        companyRepository.save(company);
 
         CheckTask checkTask = new CheckTask();
         checkTask.setTitle(s);
 
         checkTaskRepository.save(checkTask);
 
-        TaskProcess taskProcess1 = new TaskProcess();
-        taskProcess1.setCheckTask(checkTask);
-        taskProcess1.setCompany(company1);
+        TaskProcess taskProcess = new TaskProcess();
+        taskProcess.setCheckTask(checkTask);
+        taskProcess.setCompany(company);
 
-        TaskProcess taskProcess2 = new TaskProcess();
-        taskProcess2.setCheckTask(checkTask);
-        taskProcess2.setCompany(company2);
+        taskProcessRepository.save(taskProcess);
 
-        taskProcessRepository.save(taskProcess1);
+        CheckTask foundCheckTask = checkTaskRepository.findByTitle(s);
+        Assert.assertTrue(foundCheckTask.getTaskProcesses().contains(taskProcess));
 
-        checkTask.removeTaskProcess(taskProcess1);
-        checkTaskRepository.save(checkTask);
+        taskProcessRepository.delete(taskProcess);
 
+        foundCheckTask = checkTaskRepository.findByTitle(s);
+        Assert.assertEquals(0, foundCheckTask.getTaskProcesses().size());
 
-        // add task process from check task
-        checkTask.addTaskProcess(taskProcess2);
-        checkTaskRepository.save(checkTask);
-//        Assert.assertTrue(taskProcessRepository.findAll().contains(taskProcess1));
-//
-//        CheckTask found = checkTaskRepository.findByTitle(s);
-        Assert.assertEquals(2, checkTaskRepository.findByTitle(s).getTaskProcesses().size());
+        Company foundCompany = companyRepository.findByName(s);
+        Assert.assertEquals(0, foundCompany.getTaskProcesses().size());
 
-        checkTask.removeTaskProcess(taskProcess2);
-        checkTaskRepository.save(checkTask);
-        Assert.assertEquals(0, checkTask.getTaskProcesses().size());
-        Assert.assertEquals(0, checkTaskRepository.findOne(checkTask.getId()).getTaskProcesses().size());
-
+        checkTaskRepository.delete(foundCheckTask);
+        companyRepository.delete(foundCompany);
     }
 }
