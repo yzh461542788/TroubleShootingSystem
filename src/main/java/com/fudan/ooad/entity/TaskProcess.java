@@ -2,6 +2,7 @@ package com.fudan.ooad.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by zihao on 2017/6/17.
@@ -14,6 +15,7 @@ public class TaskProcess {
     private Date finishTime;
     private TaskProcessState taskProcessState;
     private Integer id;
+    private Set<CheckItemProcess> checkItemProcessSet;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,6 +61,15 @@ public class TaskProcess {
 
     public void setTaskProcessState(TaskProcessState taskProcessState) {
         this.taskProcessState = taskProcessState;
+    }
+
+    @OneToMany(mappedBy = "taskProcess")
+    public Set<CheckItemProcess> getCheckItemProcessSet() {
+        return checkItemProcessSet;
+    }
+
+    private void setCheckItemProcessSet(Set<CheckItemProcess> checkItemProcessSet) {
+        this.checkItemProcessSet = checkItemProcessSet;
     }
 
     @Override
