@@ -7,18 +7,18 @@ import javax.persistence.*;
  */
 @Entity
 public class CheckItemProcess {
-    private int id;
+    private Integer id;
     private TaskProcess taskProcess;
     private CheckItem checkItem;
     private ItemState itemState;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,5 +48,22 @@ public class CheckItemProcess {
 
     public void setTaskProcess(TaskProcess taskProcess) {
         this.taskProcess = taskProcess;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if ((obj == null) || !(obj instanceof CheckItemProcess))
+            return false;
+        CheckItemProcess checkItemProcess = (CheckItemProcess) obj;
+        if (id != null && checkItemProcess.getId() != null)
+            return id.equals(checkItemProcess.getId());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
     }
 }
