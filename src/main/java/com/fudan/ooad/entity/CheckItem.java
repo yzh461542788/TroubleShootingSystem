@@ -73,8 +73,22 @@ public class CheckItem {
         return checkTasks;
     }
 
-    public void setCheckTasks(Set<CheckTask> checkTasks) {
+    private void setCheckTasks(Set<CheckTask> checkTasks) {
         this.checkTasks = checkTasks;
+    }
+
+    void addCheckTask(CheckTask checkTask) {
+        if (checkTasks.contains(checkTask))
+            return;
+        checkTasks.add(checkTask);
+        checkTask.addCheckItem(this);
+    }
+
+    void removeCheckTask(CheckTask checkTask) {
+        if (!checkTasks.contains(checkTask))
+            return;
+        checkTasks.remove(checkTask);
+        checkTask.removeCheckItem(this);
     }
 
     @Override

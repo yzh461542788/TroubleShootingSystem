@@ -43,7 +43,7 @@ public class TroubleShootingSystemApplication implements CommandLineRunner {
         checkTask.setTitle("task1");
         checkTask.setPostDate(Date.from(Calendar.getInstance().toInstant()));
 
-        checkTask.setTemplate(templateRepository.findAll().get(0));
+//        checkTask.setTemplate(templateRepository.findAll().get(0));
 
         TaskProcess taskProcess = new TaskProcess();
         taskProcess.setCompany(company);

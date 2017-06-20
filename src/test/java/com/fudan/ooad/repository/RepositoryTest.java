@@ -171,39 +171,25 @@ public class RepositoryTest {
     }
 
     @Test
-    public void testCheckTaskTemplateAssociation() {
+    public void testCheckTaskCheckItemAssociation() {
         String s = DateUtil.getCurrentDate().toString();
-
-        Template template = new Template();
-        template.setTitle(s);
-        template.setDescription(s);
-        templateRepository.save(template);
+        CheckItem checkItem = new CheckItem();
+        checkItem.setTitle(s);
+        checkItemRepository.save(checkItem);
 
         CheckTask checkTask = new CheckTask();
         checkTask.setTitle(s);
-        checkTask.setTemplate(template);
+        checkTask.addCheckItem(checkItem);
+
         checkTaskRepository.save(checkTask);
 
-        CheckTask foundCheckTask = checkTaskRepository.findByTitle(s);
-        Template foundTemplate = templateRepository.findByTitle(s);
+        CheckItem foundCheckItem = checkItemRepository.findByTitle(s);
 
-        Assert.assertNotNull(foundCheckTask);
-        Assert.assertNotNull(foundTemplate);
+        Assert.assertNotNull(foundCheckItem);
+        Assert.assertTrue(foundCheckItem.getCheckTasks().contains(checkTask));
 
-        Assert.assertEquals(template, foundCheckTask.getTemplate());
-        Assert.assertTrue(foundTemplate.getCheckTasks().contains(checkTask));
-
-        // delete checkTask should not delete template,
-        // but the association should be removed
-        checkTaskRepository.delete(checkTask);
-        Assert.assertNull(checkTaskRepository.findByTitle(s));
-        foundTemplate = templateRepository.findByTitle(s);
-        Assert.assertNotNull(foundTemplate);
-        Assert.assertFalse(foundTemplate.getCheckTasks().contains(checkTask));
-
-        // delete template
-        templateRepository.delete(template);
-        Assert.assertNull(templateRepository.findByTitle(s));
+        checkTaskRepository.delete(checkTask.getId());
+        checkItemRepository.delete(foundCheckItem.getId());
     }
 
     @Test
@@ -259,7 +245,7 @@ public class RepositoryTest {
 
         CheckTask checkTask = new CheckTask();
         checkTask.setTitle(s);
-        checkTask.setTemplate(template);
+        checkTask.addCheckItems(template.getCheckItems());
         checkTaskRepository.save(checkTask);
 
         TaskProcess taskProcess = new TaskProcess();

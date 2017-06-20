@@ -36,7 +36,7 @@ public class TemplateService {
             );
         }
         CheckTask checkTask = new CheckTask();
-        checkTask.setTemplate(template);
+        checkTask.addCheckItems(template.getCheckItems());
         checkTask.setTitle(checkTaskTitle);
         if (checkTaskRepository.findByTitle(checkTaskTitle) != null) {
             throw new InvalidPropertyException(
@@ -139,18 +139,54 @@ public class TemplateService {
             throw new SystemException(SERVICE_NAME, e.getMessage());
         }
         return template;
-
     }
 
-    public void modifyTemplate() {
-
+    /**
+     * Edit template message including title and description. If you want to edit template's check items,
+     * try to use addCheckItem or removeCheckItem instead
+     * </p>
+     * If you only want to edit one property and keep another, just set another property to null.
+     * @param template
+     * @param title
+     * @param description
+     */
+    public Template editTemplateMessage(Template template, String title, String description) throws BaseException {
+        if (!templateRepository.exists(template.getId())) {
+            throw new NullEntityException(
+                    SERVICE_NAME,
+                    "Template does not exist in database."
+            );
+        }
+        if (title != null) {
+            template.setTitle(title);
+        }
+        if (description != null) {
+            template.setDescription(description);
+        }
+        try {
+            templateRepository.save(template);
+        } catch (Exception e) {
+            throw new SystemException(SERVICE_NAME, e.getMessage());
+        }
+        return template;
     }
 
-    public void deleteTemplate() {
-
+    public void deleteTemplate(Template template) throws BaseException {
+        if (!templateRepository.exists(template.getId())) {
+            throw new NullEntityException(
+                    SERVICE_NAME,
+                    "Template does not exist in database."
+            );
+        }
+        try {
+            templateRepository.save(template);
+        } catch (Exception e) {
+            throw new SystemException(SERVICE_NAME, e.getMessage());
+        }
     }
 
-    public Set<Template> searchTemplate() {
+    // TODO
+    public Set<Template> searchTemplateByName(String name) {
         return null;
     }
 }
