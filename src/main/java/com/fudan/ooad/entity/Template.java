@@ -49,7 +49,7 @@ public class Template {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "template_checkitem",
             joinColumns = @JoinColumn(name = "template_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "checkitem_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "check_item_id", referencedColumnName = "id"))
     public Set<CheckItem> getCheckItems() {
         return new HashSet<>(checkItems);
     }
