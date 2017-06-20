@@ -13,7 +13,7 @@ import java.util.Set;
 public class CheckTask implements Serializable {
     private Integer id;
     private String title;
-    private Template template;
+    private Set<CheckItem> checkItems = new HashSet<>();
     private Set<TaskProcess> taskProcesses = new HashSet<>();
     private Date postDate;
     private Date deadline;
@@ -37,14 +37,16 @@ public class CheckTask implements Serializable {
         this.title = title;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "template_id")
-    public Template getTemplate() {
-        return template;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "check_task_check_item",
+            joinColumns = @JoinColumn(name = "check_task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "check_item_id", referencedColumnName = "id"))
+    public Set<CheckItem> getCheckItems() {
+        return checkItems;
     }
 
-    public void setTemplate(Template template) {
-        this.template = template;
+    public void setCheckItems(Set<CheckItem> checkItems) {
+        this.checkItems = checkItems;
     }
 
     @OneToMany(mappedBy = "checkTask", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -101,8 +103,8 @@ public class CheckTask implements Serializable {
     public String toString() {
         return "CheckTask [id=" + id
                 + ", title=" + title
-                + ", templateId=" + template
                 + ", postDate" + postDate
-                + ", deadline" + deadline + "]";
+                + ", deadline" + deadline
+                + ", checkItem.size]";
     }
 }

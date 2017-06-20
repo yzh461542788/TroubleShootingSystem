@@ -11,12 +11,10 @@ import java.util.Set;
  */
 @Entity(name = "template")
 public class Template {
-
     private Integer id;
     private String title;
     private String description;
     private Set<CheckItem> checkItems = new HashSet<>();
-    private Set<CheckTask> checkTasks = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,7 +45,7 @@ public class Template {
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "template_checkitem",
+    @JoinTable(name = "template_check_item",
             joinColumns = @JoinColumn(name = "template_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "check_item_id", referencedColumnName = "id"))
     public Set<CheckItem> getCheckItems() {
@@ -82,15 +80,6 @@ public class Template {
 
     public void removeCheckItems(Collection<CheckItem> checkItems) {
         checkItems.forEach(this::removeCheckItem);
-    }
-
-    @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
-    public Set<CheckTask> getCheckTasks() {
-        return new HashSet<>(checkTasks);
-    }
-
-    private void setCheckTasks(Set<CheckTask> checkTasks) {
-        this.checkTasks = checkTasks;
     }
 
     @Override

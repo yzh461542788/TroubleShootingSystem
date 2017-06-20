@@ -13,6 +13,7 @@ public class CheckItem {
     private String title;
     private String content;
     private Set<Template> templates = new HashSet<>();
+    private Set<CheckTask> checkTasks = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -67,6 +68,14 @@ public class CheckItem {
         template.removeCheckItem(this);
     }
 
+    @ManyToMany(mappedBy = "checkItems", fetch = FetchType.EAGER)
+    public Set<CheckTask> getCheckTasks() {
+        return checkTasks;
+    }
+
+    public void setCheckTasks(Set<CheckTask> checkTasks) {
+        this.checkTasks = checkTasks;
+    }
 
     @Override
     public boolean equals(Object obj) {
