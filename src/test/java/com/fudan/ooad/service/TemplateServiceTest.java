@@ -4,6 +4,9 @@ import com.fudan.ooad.entity.CheckItem;
 import com.fudan.ooad.entity.CheckTask;
 import com.fudan.ooad.entity.Template;
 import com.fudan.ooad.exception.BaseException;
+import com.fudan.ooad.repository.CheckItemRepository;
+import com.fudan.ooad.repository.CheckTaskRepository;
+import com.fudan.ooad.repository.TemplateRepository;
 import com.fudan.ooad.util.DateUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -28,6 +31,14 @@ public class TemplateServiceTest {
     private TemplateService templateService;
     @Autowired
     private CheckItemService checkItemService;
+
+    // repositories are used to delete records in database after tests
+    @Autowired
+    private CheckTaskRepository checkTaskRepository;
+    @Autowired
+    private TemplateRepository templateRepository;
+    @Autowired
+    private CheckItemRepository checkItemRepository;
 
     private String cur;
     private Date curDate;
@@ -56,18 +67,8 @@ public class TemplateServiceTest {
     }
     @After
     public void clean() {
-        checkItems.forEach(checkItem -> {
-            try {
-                checkItemService.deleteCheckItem(checkItem);
-            } catch (BaseException e) {
-                e.printStackTrace();
-            }
-        });
-        try {
-            checkItemService.deleteCheckItem(this.checkItem);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
+        checkItems.forEach(checkItem -> checkItemRepository.delete(checkItem.getId()));
+        checkItemRepository.delete(this.checkItem.getId());
     }
 
 
@@ -157,6 +158,25 @@ public class TemplateServiceTest {
             Assert.assertEquals(checkTaskTitle, checkTask.getTitle());
             Assert.assertEquals(deadline, checkTask.getDeadline());
             Assert.assertArrayEquals(checkItems.toArray(), checkTask.getCheckItems().toArray());
+
+            // delete record in database after this test
+            checkTaskRepository.delete(checkTask.getId());
+            templateRepository.delete(template.getId());
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testFindTemplateByTitle() {
+        try {
+            Template template = templateService.createTemplate(cur, cur, checkItems);
+            Template found = templateService.findTemplateByName(cur);
+            Assert.assertEquals(template, found);
+
+            templateService.deleteTemplate(template);
+            found = templateService.findTemplateByName(cur);
+            Assert.assertNull(found);
         } catch (BaseException e) {
             e.printStackTrace();
         }

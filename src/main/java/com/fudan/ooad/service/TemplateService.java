@@ -173,15 +173,14 @@ public class TemplateService {
             );
         }
         try {
-            templateRepository.save(template);
+            templateRepository.delete(template);
         } catch (Exception e) {
             throw new SystemException(SERVICE_NAME, e.getMessage());
         }
     }
 
-    // TODO
-    public Template findTemplateByName(String name) {
-        return null;
+    public Template findTemplateByName(String title) {
+        return templateRepository.findByTitle(title);
     }
 
     public List<Template> getTemplateList() {
