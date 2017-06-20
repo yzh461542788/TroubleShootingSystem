@@ -5,6 +5,7 @@ import com.fudan.ooad.exception.BaseException;
 import com.fudan.ooad.exception.DuplicatedPropertyException;
 import com.fudan.ooad.exception.NullEntityException;
 import com.fudan.ooad.exception.SystemException;
+import com.fudan.ooad.repository.CheckItemProcessRepository;
 import com.fudan.ooad.repository.CheckTaskRepository;
 import com.fudan.ooad.repository.CompanyRepository;
 import com.fudan.ooad.repository.TaskProcessRepository;
@@ -27,6 +28,8 @@ public class CheckTaskService {
     private CompanyRepository companyRepository;
     @Autowired
     private TaskProcessRepository taskProcessRepository;
+    @Autowired
+    private CheckItemProcessRepository checkItemProcessRepository;
 
     private final String SERVICE_NAME = "CheckTaskService";
 
@@ -67,6 +70,19 @@ public class CheckTaskService {
         taskProcess.setTaskProcessState(TaskProcessState.Checking);
         try {
             taskProcessRepository.save(taskProcess);
+            Set<CheckItemProcess> checkItemProcesses = new HashSet<>();
+            for (CheckItem checkItem : checkTask.getCheckItems()) {
+                CheckItemProcess checkItemProcess = new CheckItemProcess();
+                checkItemProcess.setCheckItem(checkItem);
+                checkItemProcess.setTaskProcess(taskProcess);
+                checkItemProcess.setItemState(ItemState.Checking);
+                checkItemProcesses.add(checkItemProcess);
+            }
+            checkItemProcessRepository.save(checkItemProcesses);
+            taskProcess = taskProcessRepository.findOne(taskProcess.getId());
+
+            checkTask.addTaskProcess(taskProcess);
+            checkTaskRepository.save(checkTask);
         } catch (Exception e) {
             throw new SystemException(SERVICE_NAME, e.getMessage());
         }
@@ -85,16 +101,16 @@ public class CheckTaskService {
 
     public Set<CheckItem> getCheckItemsInCheckTask(CheckTask checkTask) throws BaseException {
         if (checkTask.getId() == null || !checkTaskRepository.exists(checkTask.getId())) {
-            return checkTask.getCheckItems();
+            throw new NullEntityException(SERVICE_NAME, "CheckTask does not exist in database");
         }
-        throw new NullEntityException(SERVICE_NAME, "CheckTask does not exist in database");
+        return checkTask.getCheckItems();
     }
 
     public Set<TaskProcess> getTaskProcesses(CheckTask checkTask) throws BaseException {
         if (checkTask.getId() == null || !checkTaskRepository.exists(checkTask.getId())) {
-            return checkTask.getTaskProcesses();
+            throw new NullEntityException(SERVICE_NAME, "CheckTask does not exist in database");
         }
-        throw new NullEntityException(SERVICE_NAME, "CheckTask does not exist in database");
+        return checkTask.getTaskProcesses();
     }
 
     public TaskProcess getTaskProcess(CheckTask checkTask, Company company) throws BaseException {
@@ -115,7 +131,7 @@ public class CheckTaskService {
                 .findFirst().orElse(null);
     }
 
-    public Set<CheckItemProcess> checkItemProcesses(CheckTask checkTask, Company company) throws BaseException {
+    public Set<CheckItemProcess> getCheckItemProcesses(CheckTask checkTask, Company company) throws BaseException {
         TaskProcess taskProcess = getTaskProcess(checkTask, company);
         return taskProcess != null ? taskProcess.getCheckItemProcessSet() : new HashSet<>(0);
     }

@@ -77,7 +77,7 @@ public class CheckTask implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "checkTask", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "checkTask", fetch = FetchType.EAGER)
     public Set<TaskProcess> getTaskProcesses() {
         return taskProcesses;
     }

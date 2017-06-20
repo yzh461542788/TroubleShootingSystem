@@ -16,4 +16,8 @@ public abstract class BaseException extends Exception {
     public String getServiceName() {
         return serviceName;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

@@ -63,13 +63,17 @@ public class TaskProcess {
         this.taskProcessState = taskProcessState;
     }
 
-    @OneToMany(mappedBy = "taskProcess")
+    @OneToMany(mappedBy = "taskProcess", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Set<CheckItemProcess> getCheckItemProcessSet() {
         return checkItemProcessSet;
     }
 
     private void setCheckItemProcessSet(Set<CheckItemProcess> checkItemProcessSet) {
         this.checkItemProcessSet = checkItemProcessSet;
+    }
+
+    public void addCheckItemProcess(CheckItemProcess checkItemProcess) {
+        this.checkItemProcessSet.add(checkItemProcess);
     }
 
     @Override
