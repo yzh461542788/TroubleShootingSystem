@@ -16,13 +16,13 @@ import java.util.Calendar;
 @SpringBootApplication
 public class TroubleShootingSystemApplication implements CommandLineRunner {
 
-	private static final Logger logger = LoggerFactory.getLogger(TroubleShootingSystemApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(TroubleShootingSystemApplication.class);
 
-	@Autowired
-	CheckItemRepository checkItemRepository;
+    @Autowired
+    CheckItemRepository checkItemRepository;
 
-	@Autowired
-	TemplateRepository templateRepository;
+    @Autowired
+    TemplateRepository templateRepository;
 
     @Autowired
     private TaskProcessRepository taskProcessRepository;
@@ -54,13 +54,13 @@ public class TroubleShootingSystemApplication implements CommandLineRunner {
 //        taskProcessRepository.findAll().get(0).equals(taskProcess);
     }
 
-	public static void main(String[] args) {
-		SpringApplication.run(TroubleShootingSystemApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TroubleShootingSystemApplication.class, args);
+    }
 
-	@Override
-	@Transactional
-	public void run(String... strings) throws Exception {
+    @Override
+    @Transactional
+    public void run(String... strings) throws Exception {
 
 //		CheckItem checkItemA = new CheckItem();
 //		checkItemA.setTitle("A");
@@ -94,5 +94,5 @@ public class TroubleShootingSystemApplication implements CommandLineRunner {
 
 
 
-	}
+    }
 }
