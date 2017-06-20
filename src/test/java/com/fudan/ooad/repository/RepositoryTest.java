@@ -31,6 +31,8 @@ public class RepositoryTest {
     private TemplateRepository templateRepository;
     @Autowired
     private CheckItemRepository checkItemRepository;
+    @Autowired
+    private CheckItemProcessRepository checkItemProcessRepository;
 
     @Test
     public void testCheckItemCRUD() {
@@ -92,6 +94,8 @@ public class RepositoryTest {
         CheckItem checkItem = new CheckItem();
         checkItem.setTitle(title);
         checkItem.setContent(content);
+
+        checkItemRepository.save(checkItem);
 
         Template template = new Template();
         template.setTitle(title);
@@ -177,15 +181,13 @@ public class RepositoryTest {
         Template template = new Template();
         template.setTitle(s);
         template.setDescription(s);
+        templateRepository.save(template);
 
         CheckTask checkTask = new CheckTask();
         checkTask.setTitle(s);
         checkTask.setTemplate(template);
-
-        // add checkTask that contains a template
         checkTaskRepository.save(checkTask);
 
-        // template should be added to database
         CheckTask foundCheckTask = checkTaskRepository.findByTitle(s);
         Template foundTemplate = templateRepository.findByTitle(s);
 
@@ -198,6 +200,7 @@ public class RepositoryTest {
         // delete checkTask should not delete template,
         // but the association should be removed
         checkTaskRepository.delete(checkTask);
+        Assert.assertNull(checkTaskRepository.findByTitle(s));
         foundTemplate = templateRepository.findByTitle(s);
         Assert.assertNotNull(foundTemplate);
         Assert.assertFalse(foundTemplate.getCheckTasks().contains(checkTask));
@@ -240,5 +243,46 @@ public class RepositoryTest {
 
         checkTaskRepository.delete(foundCheckTask);
         companyRepository.delete(foundCompany);
+    }
+
+    @Test
+    public void testCheckItemProcess() {
+        String s = DateUtil.getCurrentDate().toString();
+        Company company = new Company();
+        company.setName(s);
+        companyRepository.save(company);
+
+        CheckItem checkItem = new CheckItem();
+        checkItem.setTitle(s);
+        checkItemRepository.save(checkItem);
+
+        Template template = new Template();
+        template.setTitle(s);
+        template.addCheckItem(checkItem);
+        templateRepository.save(template);
+
+        CheckTask checkTask = new CheckTask();
+        checkTask.setTitle(s);
+        checkTask.setTemplate(template);
+        checkTaskRepository.save(checkTask);
+
+        TaskProcess taskProcess = new TaskProcess();
+        taskProcess.setCheckTask(checkTask);
+        taskProcess.setCompany(company);
+        taskProcessRepository.save(taskProcess);
+
+        CheckItemProcess checkItemProcess = new CheckItemProcess();
+        checkItemProcess.setTaskProcess(taskProcess);
+        checkItemProcess.setCheckItem(checkItem);
+        checkItemProcessRepository.save(checkItemProcess);
+
+        Assert.assertEquals(checkItem, checkItemProcess.getCheckItem());
+
+        checkItemProcessRepository.delete(checkItemProcess);
+        taskProcessRepository.delete(taskProcess);
+        checkTaskRepository.delete(checkTask);
+        checkItemRepository.delete(checkItem);
+        templateRepository.delete(template);
+        companyRepository.delete(company);
     }
 }

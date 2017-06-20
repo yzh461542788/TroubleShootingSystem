@@ -23,7 +23,7 @@ public class CheckItemProcess {
     }
 
     @ManyToOne
-    @JoinColumn(name = "checkitem_id")
+    @JoinColumn(name = "check_item_id")
     public CheckItem getCheckItem() {
         return checkItem;
     }

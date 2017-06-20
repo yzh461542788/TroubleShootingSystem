@@ -37,7 +37,7 @@ public class CheckTask implements Serializable {
         this.title = title;
     }
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     @JoinColumn(name = "template_id")
     public Template getTemplate() {
         return template;

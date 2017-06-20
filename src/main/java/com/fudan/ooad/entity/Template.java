@@ -45,7 +45,7 @@ public class Template {
         this.description = description;
     }
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "template_checkitem",
             joinColumns = @JoinColumn(name = "template_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "checkitem_id", referencedColumnName = "id"))
@@ -71,7 +71,7 @@ public class Template {
         checkItem.removeTemplate(this);
     }
 
-    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
     public Set<CheckTask> getCheckTasks() {
         return new HashSet<>(checkTasks);
     }
