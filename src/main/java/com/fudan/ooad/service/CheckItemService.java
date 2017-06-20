@@ -130,7 +130,7 @@ public class CheckItemService{
 
         //判断是否有关联的已发布的事务
         int size = checkItem.getCheckTasks().size();
-        if (size == 0) {
+        if (size != 0) {
             throw new InvalidOperationException(
                     SERVICE_NAME,
                     "CheckItem has already binded with a least one CheckTask."

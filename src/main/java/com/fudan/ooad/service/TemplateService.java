@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -52,7 +53,7 @@ public class TemplateService {
                     "Deadline is earlier than current date."
             );
         }
-        checkTask.setPostDate(deadline);
+        checkTask.setDeadline(deadline);
         try {
             checkTaskRepository.save(checkTask);
         } catch (Exception e) {
@@ -84,13 +85,13 @@ public class TemplateService {
     }
 
     public Template addCheckItem(Template template, CheckItem checkItem) throws BaseException {
-        if (!templateRepository.exists(template.getId())) {
+        if (template == null || !templateRepository.exists(template.getId())) {
             throw new NullEntityException(
                     SERVICE_NAME,
                     "Template does not exist in database. Try to use templateService.createTemplate instead"
             );
         }
-        if (!checkItemRepository.exists(checkItem.getId())) {
+        if (checkItem == null || !checkItemRepository.exists(checkItem.getId())) {
             throw new NullEntityException(
                     SERVICE_NAME,
                     "Cannot add a checkItem that does not exist in database to a template."
@@ -141,15 +142,6 @@ public class TemplateService {
         return template;
     }
 
-    /**
-     * Edit template message including title and description. If you want to edit template's check items,
-     * try to use addCheckItem or removeCheckItem instead
-     * </p>
-     * If you only want to edit one property and keep another, just set another property to null.
-     * @param template
-     * @param title
-     * @param description
-     */
     public Template editTemplateMessage(Template template, String title, String description) throws BaseException {
         if (!templateRepository.exists(template.getId())) {
             throw new NullEntityException(
@@ -157,12 +149,14 @@ public class TemplateService {
                     "Template does not exist in database."
             );
         }
-        if (title != null) {
-            template.setTitle(title);
+        if (!template.getTitle().equals(title) && templateRepository.findByTitle(title) != null) {
+            throw new DuplicatedPropertyException(
+                    SERVICE_NAME,
+                    "Duplicated title"
+            );
         }
-        if (description != null) {
-            template.setDescription(description);
-        }
+        template.setTitle(title);
+        template.setDescription(description);
         try {
             templateRepository.save(template);
         } catch (Exception e) {
@@ -186,7 +180,12 @@ public class TemplateService {
     }
 
     // TODO
-    public Set<Template> searchTemplateByName(String name) {
+    public Template findTemplateByName(String name) {
         return null;
     }
+
+    public List<Template> getTemplateList() {
+        return templateRepository.findAll();
+    }
+
 }
