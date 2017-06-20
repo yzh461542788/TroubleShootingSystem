@@ -101,10 +101,6 @@ public class RepositoryTest {
         template.setTitle(title);
         template.setDescription(description);
 
-        template.addCheckItem(checkItem);
-        Assert.assertTrue(template.getCheckItems().contains(checkItem));
-        Assert.assertTrue(checkItem.getTemplates().contains(template));
-
         // add checkItem from template
         template.addCheckItem(checkItem);
         Assert.assertTrue(template.getCheckItems().contains(checkItem));
