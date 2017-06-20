@@ -2,6 +2,7 @@ package com.fudan.ooad.entity;
 
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class Template {
         this.description = description;
     }
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "template_checkitem",
             joinColumns = @JoinColumn(name = "template_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "checkitem_id", referencedColumnName = "id"))
@@ -64,11 +65,23 @@ public class Template {
         checkItem.addTemplate(this);
     }
 
+    public void addCheckItems(Collection<CheckItem> checkItems) {
+        checkItems.forEach(this::addCheckItem);
+    }
+
     public void removeCheckItem(CheckItem checkItem) {
         if (!checkItems.contains(checkItem))
             return;
         checkItems.remove(checkItem);
         checkItem.removeTemplate(this);
+    }
+
+    public void clearCheckItems() {
+        checkItems.forEach(checkItem -> checkItem.removeTemplate(this));
+    }
+
+    public void removeCheckItems(Collection<CheckItem> checkItems) {
+        checkItems.forEach(this::removeCheckItem);
     }
 
     @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)

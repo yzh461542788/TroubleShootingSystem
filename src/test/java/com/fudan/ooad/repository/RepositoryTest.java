@@ -281,8 +281,9 @@ public class RepositoryTest {
         checkItemProcessRepository.delete(checkItemProcess);
         taskProcessRepository.delete(taskProcess);
         checkTaskRepository.delete(checkTask);
-        checkItemRepository.delete(checkItem);
         templateRepository.delete(template);
+        checkItem = checkItemRepository.findByTitle(s);
+        checkItemRepository.delete(checkItem);
         companyRepository.delete(company);
     }
 }
