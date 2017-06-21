@@ -51,6 +51,7 @@ public class CheckTaskServiceTest {
     private int companyNumberBeforeTest;
 
     @Before
+    // 在测试开始之前插入10个检查项目，一个模版，一个检查任务，10个公司
     public void init() throws BaseException {
         curDate = DateUtil.getCurrentDate();
         cur = curDate.toString();
@@ -73,6 +74,7 @@ public class CheckTaskServiceTest {
     }
 
     @After
+    // 在测试结束后清除之前的插入
     public void clean() {
         checkTaskRepository.delete(checkTask.getId());
         templateRepository.delete(template.getId());
@@ -82,13 +84,17 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testGetAllCompanyList() {
+        // 在测试前插入了10个公司，插入后数据库公司总数应该与插入前的公司总数加上插入的公司数量相等
         Assert.assertEquals(companyList.size() + companyNumberBeforeTest, checkTaskService.getAllCompanyList().size());
     }
 
     @Test
     public void testDeliverToCompany() throws BaseException {
+        // 将任务发放给公司，
         Company toBeDelivered = companyList.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
+
+        // 若发放成功，则任务对应的公司与上列公司相等
         Assert.assertEquals(toBeDelivered, taskProcess.getCompany());
         Assert.assertEquals(checkTask, taskProcess.getCheckTask());
 
@@ -98,9 +104,11 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testGetDeliveredCompanies() throws BaseException {
+        // 获取所有已发放公司列表
         Company toBeDelivered = companyList.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
 
+        // 已发放公司列表应该包含刚刚发放的公司
         Assert.assertTrue(checkTaskService.getDeliveredCompanies(checkTask).contains(toBeDelivered));
 
         // delete database record
@@ -109,9 +117,11 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testTaskAlreadyDeliveredToCompany() throws BaseException {
+        // 测试任务是否已发放给某公司
         Company toBeDelivered = companyList.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
 
+        // 成功发放后该方法返回True
         Assert.assertTrue(checkTaskService.taskAlreadyDeliveredToCompany(checkTask, toBeDelivered));
 
         // delete database record
@@ -120,12 +130,15 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testGetDeliverableCompanies() throws BaseException {
+        // 测试可发放的公司
         List<Company> deliverableCompanies = checkTaskService.getDeliverableCompanies(checkTask);
 
+        // 可发放公司列表不应包含刚刚发放的公司
         Company toBeDelivered = deliverableCompanies.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
         List<Company> newDeliverableCompanies = checkTaskService.getDeliverableCompanies(checkTask);
 
+        // 刚刚发放一个公司后，可发放公司列表大小应该-1
         Assert.assertEquals(deliverableCompanies.size() - 1, newDeliverableCompanies.size());
         Assert.assertFalse(newDeliverableCompanies.contains(toBeDelivered));
 
@@ -135,14 +148,17 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testGetCheckItemsInCheckTask() throws BaseException {
+        // 获取任务中的检查列表，应该与@Before 中初始化的相同
         Set<CheckItem> checkItemsInCheckTask = checkTaskService.getCheckItemsInCheckTask(checkTask);
         Assert.assertArrayEquals(checkItemSet.toArray(), checkItemsInCheckTask.toArray());
     }
 
     @Test
     public void testGetTaskProcesses() throws BaseException {
+        // 获取任务中发放至公司的检查过程列表
         Assert.assertEquals(0, checkTaskService.getTaskProcesses(checkTask).size());
 
+        // 应该与插入的公司相对应
         Company toBeDelivered = companyList.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
         Assert.assertEquals(taskProcess, checkTaskService.getTaskProcess(checkTask, toBeDelivered));
@@ -153,10 +169,12 @@ public class CheckTaskServiceTest {
 
     @Test
     public void testGetCheckItemProcesses() throws BaseException {
+        // 获取任务中每个检查项目的状态
         Company toBeDelivered = companyList.get(1);
         TaskProcess taskProcess = checkTaskService.deliverTaskToCompany(checkTask, toBeDelivered);
         Set<CheckItemProcess> checkItemProcesses = checkTaskService.getCheckItemProcesses(checkTask, toBeDelivered);
         checkItemProcesses.forEach(checkItemProcess -> {
+            // 新建的任务中检查项目的状态应该都是"检查中"，并且项目与任务对应
             Assert.assertEquals(ItemState.Checking, checkItemProcess.getItemState());
             Assert.assertEquals(taskProcess, checkItemProcess.getTaskProcess());
         });

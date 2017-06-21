@@ -74,9 +74,11 @@ public class TemplateServiceTest {
 
     @Test
     public void testCreateAndDeleteTemplate() {
+        // 测试模版的增加和删除
         try {
             int templateNum = templateService.getTemplateList().size();
 
+            // 新建一个模版后，模版非空，属性值与设置相同
             Template template = templateService.createTemplate(cur, cur, checkItems);
             Assert.assertNotNull(template);
             Assert.assertEquals(cur, template.getTitle());
@@ -84,6 +86,7 @@ public class TemplateServiceTest {
             Assert.assertEquals(checkItems.size(), template.getCheckItems().size());
             Assert.assertEquals(templateNum + 1, templateService.getTemplateList().size());
 
+            // 删除后再次搜索模版，模版为空
             templateService.deleteTemplate(template);
             Assert.assertNull(templateService.findTemplateByName(cur));
         } catch (BaseException e) {
@@ -93,7 +96,9 @@ public class TemplateServiceTest {
 
     @Test
     public void testEditTemplate() {
+        // 测试模版的修改
         try {
+            // 修改模版属性后，与预期相同
             Template template = templateService.createTemplate(cur, cur, checkItems);
             Assert.assertEquals(cur, template.getTitle());
             Assert.assertEquals(cur, template.getDescription());
@@ -112,10 +117,10 @@ public class TemplateServiceTest {
     @Test
     public void testAddCheckItem() {
         try {
+            // 向模版添加检查项目，添加后模版的项目列表包含该项目
             Template template = templateService.createTemplate(cur, cur, checkItems);
             Assert.assertNotNull(template);
             Assert.assertEquals(checkItems.size(), template.getCheckItems().size());
-
 
             templateService.addCheckItem(template, checkItem);
             Assert.assertEquals(checkItems.size() + 1, template.getCheckItems().size());
@@ -131,6 +136,7 @@ public class TemplateServiceTest {
     @Test
     public void testDeleteCheckItem() {
         try {
+            // 删除模版中的项目，删除后模版的项目列表不再包含该项目
             Template template = templateService.createTemplate(cur, cur, checkItems);
             Assert.assertEquals(checkItems.size(), template.getCheckItems().size());
 
@@ -148,12 +154,14 @@ public class TemplateServiceTest {
     @Test
     public void testPostToCheckTask() {
         try {
+            // 将模版发放为任务
             Template template = templateService.createTemplate(cur, cur, checkItems);
             String checkTaskTitle = cur;
             Date deadline = Date.from(curDate.toInstant().plusSeconds(3600 * 24 * 10));
 
             CheckTask checkTask = templateService.postToCheckTask(template, checkTaskTitle, deadline);
 
+            // 任务发放成功后非空，且属性与预期相同，检查项目列表与模版中的相同
             Assert.assertNotNull(checkTask);
             Assert.assertEquals(checkTaskTitle, checkTask.getTitle());
             Assert.assertEquals(deadline, checkTask.getDeadline());
@@ -169,7 +177,9 @@ public class TemplateServiceTest {
 
     @Test
     public void testFindTemplateByTitle() {
+        // 根据模版名称搜索模版
         try {
+            // 添加模版后搜索，二者应该相等
             Template template = templateService.createTemplate(cur, cur, checkItems);
             Template found = templateService.findTemplateByName(cur);
             Assert.assertEquals(template, found);

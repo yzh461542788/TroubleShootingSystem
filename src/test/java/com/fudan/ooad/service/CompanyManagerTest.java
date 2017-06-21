@@ -44,6 +44,8 @@ public class CompanyManagerTest {
 
     @Test
     public void testCreateAndDeleteCompanyAndGetCompanyList() throws BaseException {
+        // 对公司进行增删查的操作，主要看CompanyState是否自动完善
+        // 当其他字段有空值时，该属性为待完善，其他字段不空时，该属性为正常
         // create company with null field
         Company company1 = companyManagerService.createCompany(
                 cur + 1, cur + 1, cur + 1, cur + 1, cur + 1, cur + 1, cur + 1, null
@@ -72,6 +74,7 @@ public class CompanyManagerTest {
 
     @Test
     public void testEditCompany() throws BaseException {
+        // 修改公司，该公司本来存在空属性，状态为待完善，当空属性被改成非空值时，状态应该自动转化为正常
         Assert.assertEquals(cur, company.getContact());
         Assert.assertEquals(cur, company.getContactPhoneNumber());
         Assert.assertEquals(cur, company.getBusinessCategory());
