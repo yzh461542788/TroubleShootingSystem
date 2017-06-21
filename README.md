@@ -1,6 +1,6 @@
 # TroubleShootingSystem
-A trouble shooting system 
-  
+《面向对象分析和设计》期末Project
+  
 ## 1. 小组成员
 * 叶子豪 14302010033
 * 金迪威 14302010029
