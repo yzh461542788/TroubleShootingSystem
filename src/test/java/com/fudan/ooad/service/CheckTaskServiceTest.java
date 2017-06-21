@@ -24,8 +24,6 @@ public class CheckTaskServiceTest {
     @Autowired
     private CheckTaskService checkTaskService;
     @Autowired
-    private CompanyService companyService;
-    @Autowired
     private CheckItemService checkItemService;
     @Autowired
     private TemplateService templateService;

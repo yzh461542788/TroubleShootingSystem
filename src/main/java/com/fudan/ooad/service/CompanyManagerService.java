@@ -80,25 +80,22 @@ public class CompanyManagerService {
                                String businessScope)
             throws BaseException {
         if (company != null && company.getId() != null) {
-            company = companyRepository.findOne(company.getId());
-            if (company != null) {
-                company.setContact(contact);
-                company.setContactPhoneNumber(contactPhoneNumber);
-                company.setBusinessGroup(businessGroup);
-                company.setBusinessCategory(businessCategory);
-                company.setBusinessScope(businessScope);
+            company.setContact(contact);
+            company.setContactPhoneNumber(contactPhoneNumber);
+            company.setBusinessGroup(businessGroup);
+            company.setBusinessCategory(businessCategory);
+            company.setBusinessScope(businessScope);
 
-                if (contact == null || contactPhoneNumber == null || businessGroup == null
-                        || businessCategory == null || businessScope == null) {
-                    company.setCompanyState(CompanyState.Incomplete);
-                } else {
-                    company.setCompanyState(CompanyState.Normal);
-                }
-                try {
-                    companyRepository.save(company);
-                } catch (Exception e) {
-                    throw new SystemException(SERVICE_NAME, e.getMessage());
-                }
+            if (contact == null || contactPhoneNumber == null || businessGroup == null
+                    || businessCategory == null || businessScope == null) {
+                company.setCompanyState(CompanyState.Incomplete);
+            } else {
+                company.setCompanyState(CompanyState.Normal);
+            }
+            try {
+                return companyRepository.save(company);
+            } catch (Exception e) {
+                throw new SystemException(SERVICE_NAME, e.getMessage());
             }
         }
         throw new NullEntityException(
@@ -107,9 +104,10 @@ public class CompanyManagerService {
         );
     }
 
-    public Company deleteCompany(Company company) throws BaseException {
+    public void deleteCompany(Company company) throws BaseException {
         if (company != null && company.getId() != null) {
             companyRepository.delete(company.getId());
+            return;
         }
         throw new NullEntityException(
                 SERVICE_NAME,

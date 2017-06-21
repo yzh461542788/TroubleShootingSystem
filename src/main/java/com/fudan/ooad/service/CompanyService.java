@@ -33,11 +33,10 @@ public class CompanyService{
 
     private final String SERVICE_NAME = "CompanyService";
 
-    
+
     public Set<TaskProcess> getAllTaskProcesses(Company company) throws BaseException{
         /*
         company是否存在
-
          */
         if (company.getId() == null) {
             throw new NullEntityException(
@@ -97,8 +96,8 @@ public class CompanyService{
 
 
     }
-    
-    public void setCheckItemState(TaskProcess taskProcess, CheckItem checkItem, ItemState itemState) throws BaseException{
+
+    public CheckItemProcess setCheckItemState(TaskProcess taskProcess, CheckItem checkItem, ItemState itemState) throws BaseException{
         if (taskProcess.getId() == null) {
             throw new NullEntityException(
                     SERVICE_NAME,
@@ -139,6 +138,7 @@ public class CompanyService{
         if(itemState.toString().equals("已检查")){
             CheckItemProcess checkItemProcess = checkItemProcessRepository.findByTaskProcessAndCheckItem(taskProcess, checkItem);
             checkItemProcess.setItemState(itemState);
+            return checkItemProcessRepository.save(checkItemProcess);
         }
         else{
             throw new InvalidOperationException(
