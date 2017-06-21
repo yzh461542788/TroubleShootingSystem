@@ -28,5 +28,3 @@ dist/
 nbdist/
 .nb-gradle/
 
-### Database properties ###
-/src/main/resources/application.properties
